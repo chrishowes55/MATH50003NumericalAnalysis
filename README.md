@@ -9,15 +9,18 @@ Office hour: Mondays 11am, Huxley 6M40
 
 **Background material**
 
-  A. [Introduction to Julia](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/Julia.ipynb): we introduce  the basic features of the Julia language. \
-  B. [Asymptotics and Computational Cost](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/Asymptotics.ipynb): we review Big-O, little-o and asymptotic to notation,
+  A. [Introduction to Julia](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/A.Julia.ipynb): we introduce  the basic features of the Julia language. \
+  B. [Asymptotics and Computational Cost](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/B.Asymptotics.ipynb): we review Big-O, little-o and asymptotic to notation,
 and their usage in describing computational cost.
 
 **I: Computing with numbers**
 
-1. [Integers](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/Integers.ipynb): we discuss how computers represent integers using modular arithmetic.
-2. [Reals](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/Reals.ipynb): we discuss how computers represent reals using IEEE floating-point arithmetic.
-3. [Divided Differences](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/DividedDifferences.ipynb): we discuss how we can approximate derivatives using floating point arithmetic, with error bounds.
+1. [Integers](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/I.1.Integers.ipynb): we discuss how computers represent integers using modular arithmetic.
+2. [Reals](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/I.2.Reals.ipynb): we discuss how computers represent reals using IEEE floating-point arithmetic.
+3. [Divided Differences](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/I.3.DividedDifferences.ipynb): we discuss how we can approximate derivatives using floating point arithmetic, with error bounds.
+4. [Dual Numbers](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes/I.4.DualNumbers.ipynb): we discuss how a special commutative ring, _dual numbers_,
+which are defined similar to complex numbers,
+facilitate fast and accurate computation of derivatives.
 
 **II: Computing with matrices**
 
@@ -33,17 +36,23 @@ and their usage in describing computational cost.
 
 ## Problem sheets (pen-and-paper)
 
-1. [Integers and Reals](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet1.ipynb)
+1. [Integers and Reals](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet1.ipynb) ([Solutions](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet1s.ipynb))
+1. [Bounding Errors](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet2.ipynb)
 
 
 ## Labs (Julia-based)
 
-1. [Introduction to Julia](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab1.ipynb) ([Raw](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/src/labs/lab1.jl))
+1. [Introduction to Julia](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab1.ipynb) ([Raw](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/src/labs/lab1.jl)) ([Solutions](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab1s.ipynb))
+2. [Interval Arithmetic](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab2.ipynb) ([Raw](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/src/labs/lab2.jl))
+2. [Divided Differences and Dual Numbers](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab3.ipynb) ([Raw](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/src/labs/lab3.jl))
+
 
 ## Lecture material
 
 1. Integers: [Notebook](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/lectures/Lecture1.ipynb)
 2. Floating Point: [Notebook](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/lectures/Lecture2.ipynb)
+3. Arithmetic: [Notebook](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/lectures/Lecture3.ipynb)
+4. Bounding Errors: [Notebook](https://nbviewer.org/github/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/lectures/Lecture4.ipynb)
 
 ## Reading List
 
@@ -53,8 +62,8 @@ and their usage in describing computational cost.
 3. Lloyd N. Trefethen, [Approximation Theory and Approximation Practice](https://people.maths.ox.ac.uk/trefethen/ATAP/ATAPfirst6chapters.pdf), Chapters 1–4, 17–19
 4. [The Julia Documentation](https://docs.julialang.org)
 5. [The Julia–Matlab–Python Cheatsheet](https://cheatsheets.quantecon.org)
-6. [Think Julia](https://benlauwens.github.io/ThinkJulia.jl/latest/book)
-
+6. Ben Lauwens, [Think Julia](https://benlauwens.github.io/ThinkJulia.jl/latest/book)
+7. David A. Ham, [Just enough Git to get by](https://object-oriented-python.github.io/a2_git.html)
 
 ## What is numerical analysis? 
 

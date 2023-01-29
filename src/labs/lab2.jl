@@ -75,21 +75,17 @@ function +(x::Interval, y::Interval)
     T = promote_type(typeof(x.a), typeof(x.b))
     a = setrounding(T, RoundDown) do
         ## TODO: lower bound
-        ## SOLUTION
-        x.a + y.a
-        ## END
+        
     end
     b = setrounding(T, RoundUp) do
         ## TODO: upper bound
-        ## SOLUTION
-        x.b + y.b
-        ## END
+        
     end
     Interval(a, b)
 end
 
 ## following example was the non-associative example but now we have bounds
-@test Interval(1.1,1.1) + Interval(1.2,1.2) + Interval(1.3,1.3) ≡ Interval(3.5999999999999996, 3.6000000000000005)
+@test_broken Interval(1.1,1.1) + Interval(1.2,1.2) + Interval(1.3,1.3) ≡ Interval(3.5999999999999996, 3.6000000000000005)
 
 ## Following should implement ⊘
 function /(x::Interval, n::Integer)
@@ -99,29 +95,17 @@ function /(x::Interval, n::Integer)
     end
     a = setrounding(T, RoundDown) do
         ## TODO: lower bound
-        ## SOLUTION
-        if n > 0
-            x.a / n
-        else
-            x.b / n
-        end
-        ## END
+        
     end
     b = setrounding(T, RoundUp) do
         ## TODO: upper bound
-        ## SOLUTION
-        if n > 0
-            x.b / n
-        else
-            x.a / n
-        end
-        ## END
+        
     end
     Interval(a, b)
 end
 
-@test Interval(1.0,2.0)/3 ≡ Interval(0.3333333333333333, 0.6666666666666667)
-@test Interval(1.0,2.0)/(-3) ≡ Interval(-0.6666666666666667, -0.3333333333333333)
+@test_broken Interval(1.0,2.0)/3 ≡ Interval(0.3333333333333333, 0.6666666666666667)
+@test_broken Interval(1.0,2.0)/(-3) ≡ Interval(-0.6666666666666667, -0.3333333333333333)
 
 ## Following should implement ⊗
 function *(x::Interval, y::Interval)
@@ -134,39 +118,19 @@ function *(x::Interval, y::Interval)
     end
     a = setrounding(T, RoundDown) do
         ## TODO: lower bound
-        ## SOLUTION
-        if x.a < 0 && x.b < 0 && y.a < 0 && y.b < 0
-            y.b * x.b
-        elseif x.a < 0 && x.b < 0 && y.a > 0 && y.b > 0
-            x.a * y.b
-        elseif x.a > 0 && x.b > 0 && y.a < 0 && y.b < 0
-            x.b * y.a
-        else
-            x.a * y.a
-        end
-        ## END
+        
     end
     b = setrounding(T, RoundUp) do
         ## TODO: upper bound
-        ## SOLUTION
-        if x.a < 0 && x.b < 0 && y.a < 0 && y.b < 0
-            y.a * x.a
-        elseif x.a < 0 && x.b < 0 && y.a > 0 && y.b > 0
-            x.b * y.a
-        elseif x.a > 0 && x.b > 0 && y.a < 0 && y.b < 0
-            x.a * y.b
-        else
-            x.b * y.b
-        end
-        ## END
+        
     end
     Interval(a, b)
 end
 
-@test Interval(1.1, 1.2) * Interval(2.1, 3.1) ≡ Interval(2.31, 3.72)
-@test Interval(-1.2, -1.1) * Interval(2.1, 3.1) ≡ Interval(-3.72, -2.31)
-@test Interval(1.1, 1.2) * Interval(-3.1, -2.1) ≡ Interval(-3.72, -2.31)
-@test Interval(-1.2, -1.1) * Interval(-3.1, -2.1) ≡ Interval(2.31, 3.72)
+@test_broken Interval(1.1, 1.2) * Interval(2.1, 3.1) ≡ Interval(2.31, 3.72)
+@test_broken Interval(-1.2, -1.1) * Interval(2.1, 3.1) ≡ Interval(-3.72, -2.31)
+@test_broken Interval(1.1, 1.2) * Interval(-3.1, -2.1) ≡ Interval(-3.72, -2.31)
+@test_broken Interval(-1.2, -1.1) * Interval(-3.1, -2.1) ≡ Interval(2.31, 3.72)
 
 # -----
 
@@ -190,14 +154,7 @@ end
 
 # **Problem 5.3⋆** Bound the tail of the Taylor series for ${\rm e}^x$ assuming $|x| ≤ 1$. 
 # (Hint: ${\rm e}^x ≤ 3$ for $x ≤ 1$.)
-# ## SOLUTION
-# From the Taylor remainder theorem we know the error is
-# $$
-# {f^{(n+1)}(ξ) \over (n+1)!} |x|^{n+1} ≤ {3 \over (n+1)!}
-# $$
-# Thus by widening the computation by this error we ensure that we have
-# captured the error by truncating the Taylor series.
-# ## END
+# 
 
 # ------
 # 
@@ -209,35 +166,16 @@ end
 
 function exp_bound(x::Interval, n)
     ## TODO: Return an Interval such that exp(x) is guaranteed to be a subset
-    ## SOLUTION
-    if abs(x.a) > 1 || abs(x.b) > 1
-        error("Interval must be a subset of [-1, 1]")
-    end
-    ret = exp_t(x, n) # the code for Taylor series should work on Interval unmodified
-    f = factorial(min(20, n + 1)) # avoid overflow in computing factorial
-    T = typeof(ret.a)
-
-    err = setrounding(T, RoundUp) do
-        3 / f
-    end
-    ret + Interval(-err,err)
-    ## END
+    
 end
 
 e_int = exp_bound(Interval(1.0,1.0), 20)
-@test exp(big(1)) in e_int
-@test exp(big(-1)) in exp_bound(Interval(-1.0,-1.0), 20)
-@test e_int.b - e_int.a ≤ 1E-13 # we want our bounds to be sharp
+@test_broken exp(big(1)) in e_int
+@test_broken exp(big(-1)) in exp_bound(Interval(-1.0,-1.0), 20)
+@test_broken e_int.b - e_int.a ≤ 1E-13 # we want our bounds to be sharp
 
 # ------
 # **Problem 5.5** Use `big` and `setprecision` to compute ℯ to a 1000 decimal digits with
 # rigorous error bounds. 
 
 ##
-## SOLUTION
-
-setprecision(100_000) do
-    exp_bound(Interval(big(1.0),big(1.0)), 20)
-end
-
-## END

@@ -34,7 +34,12 @@ typeof(5)
 # -----
 # **Problem 1.1** Use `sizeof` to determine how many bits your machine uses for the type `Int`.
 
-##
+## SOLUTION
+
+sizeof(Int) # returns 8 bytes == 8*8 bits = 64 bits. Some machines may be 32 bits.
+
+## END
+
 # -----
 
 # There are a few ways to create other types of integers. Conversion
@@ -60,14 +65,25 @@ UInt8(5) # converts an `Int` to an `UInt8`, displaying the result in hex
 # -----
 # **Problem 1.2** Use binary format to create an `Int` corresponding to $(101101)_2$.
 
-##
+## SOLUTION
+
+Int(0b101101) # Without the `Int` it would be a UInt8
+
+## END
+
 
 # -----
 
 # **Problem 1.3** What happens if you specify more than 64 bits using `0b⋅⋅…⋅⋅`? 
 # What if you specify more than 128 bits?
 
-##
+## SOLUTION
+
+typeof(0b111111111111111111111111111111111111111111111111111111111111111111111111111111111111) # creates a UInt128
+
+typeof(0b111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111) # creates a BigInt
+
+## END
 
 # -----
 
@@ -92,6 +108,21 @@ UInt8(2)^7;
 Int8(2)^7;
 #
 Int8(2)^8;
+#
+
+## SOLUTION
+
+UInt8(120) + UInt8(10) # returns 0x82 = 8*16+2 = 130
+
+Int8(120) + Int8(10) # returns -126 since mod(-126,2^8) == 130
+
+UInt8(2)^7 # Returns 0x80 = 8*16 = 128
+
+Int8(2)^7 # Retuns -128 since mod(-128,2^8) == 128
+
+Int8(2)^8 # Returns 0 since mod(2^8, 2^8) == 0
+
+## END
 
 # -----
 
@@ -102,7 +133,14 @@ Int8(2)^8;
 # -----
 # **Problem 2.1** Use `printbits` to guess the binary representation of $1/5$.
 
-##
+## SOLUTION
+
+printbits(1/5) 
+## exponent is 0b01111111100 == 1020 so we have 2^(1020 - 1023) = 2^(-3)
+## significand is 1.1001100110011001100110011001100110011001100110011010
+## guess: 1/5 == 2^(-3) (1.10011001100…)_2 2^(-3) (∑_{k=0}^∞ (2^(-4k) + 2^(-4k-1)))
+
+## END
 
 # -----
 
@@ -115,14 +153,45 @@ Int8(2)^8;
 #     \end{cases}
 # $$
 
-##
+## SOLUTION
+
+## significand has 52 bits. we can either do it by hand or create a string:
+
+function isprime(k) # quick-and-dirty test for prime
+    for j=1:k-1
+        if gcd(k, j) ≠ 1
+            return false
+        end
+    end
+    return true
+end
+
+ret = "1" # leading coefficient
+
+for k = 1:52
+    global ret # in scripts we need to let Julia know ret is a global variable
+    if isprime(k)
+        ret *= "1"
+    else
+        ret *= "0"
+    end
+end
+
+sig = 2.0^(-52) * parse(Int, ret; base=2)
+
+2.0^(156 - 1023) * sig
+
+## END
 
 # -----
 
-# **Problem 2.3** Create the smallest postive non-zero sub-normal `Float16` by specifying
+# **Problem 2.3** Create the smallest positive non-zero sub-normal `Float16` by specifying
 # its bits.
 
-##
+## SOLUTION
+## sign is + so sign bit is 0, exponent is 00000 and significand is all zeros apart from a 1:
+reinterpret(Float16, 0b0000000000000001) # == nextfloat(Float16(0))
+## END
 
 # -----
 
@@ -138,6 +207,12 @@ Int8(2)^8;
 bitstring(11);  # Semi-colon prohibits output, delete to check your answer
 #
 bitstring(-11);
+
+## SOLUTION
+bitstring(11) # "0000000000000000000000000000000000000000000000000000000000001011"
+bitstring(-11) # "1111111111111111111111111111111111111111111111111111111111110101"
+## this is because mod(-11, 2^64) == 2^64 - 12 == 0b10000…000 - 0b1100 == 0b111…11 - 0b1011 + 0b1
+## END
 
 # -----
 
@@ -158,7 +233,14 @@ parse(Int8, "-00001011"; base=2)
 # **Problem 3.2** Combine `parse`, `reinterpret`, and `UInt8` to convert the
 # above string to a (negative) `Int8` with the specified bits.
 
-##
+## SOLUTION
+
+## The above code creates the bits "11110101". Instead, we first parse the bits:
+
+x = reinterpret(Int8, parse(UInt8, "10001011"; base=2)) # -117
+bitstring(x)
+
+## END
 
 # -----
 
@@ -191,6 +273,19 @@ end
 ## Change to `@test` to see if your test passes
 @test_broken tenthbitto1(Int32(100)) ≡ Int32(4194404)
 
+## SOLUTION
+function tenthbitto1(x::Int32)
+    ## TODO: change the 10th bit of `x` to 1
+    ret = bitstring(x)
+    parse(Int32, ret[1:9] * "1" * ret[11:end]; base=2)
+end
+
+## unit tests are to help you check your result
+## Change to `@test` to see if your test passes
+@test tenthbitto1(Int32(100)) ≡ Int32(4194404)
+
+## END
+
 # -----
 
 
@@ -202,6 +297,20 @@ end
 
 @test_broken tenthbitto1(Int32(100)) ≡ Int32(4194404)
 @test_broken tenthbitto1(-Int32(100000010)) ≡ Int32(-95805706)
+
+## SOLUTION
+
+function tenthbitto1(x::Int32)
+    ## TODO: change the 10th bit of `x` to 1
+    ret = bitstring(x)
+    x = parse(UInt32, ret[1:9] * "1" * ret[11:end]; base=2)
+    reinterpret(Int32, x)
+end
+
+@test tenthbitto1(Int32(100)) ≡ Int32(4194404)
+@test tenthbitto1(-Int32(100000010)) ≡ Int32(-95805706)
+
+## END
 
 # -----
 
@@ -245,26 +354,52 @@ function ==(x::Rat, y::Rat)
     ## TODO: implement equality, making sure to check the case where
     ## the numerator/denominator are possibly reducible
     ## Hint: `gcd` and `div` may be useful. Use `?` to find out what they do
+
+    ## SOLUTION
+    xg = gcd(x.p, x.q)
+    yg = gcd(y.p, y.q)
+    div(x.p, xg) == div(y.p, yg) && div(x.q, xg) == div(y.q, yg)
+    ## END
 end
 
 ## We can also support equality when `x isa Rat` and `y isa Integer`
 function ==(x::Rat, y::Integer)
-    1 # TODO: implement
+    ## TODO: implement
+    ## SOLUTION
+    x == Rat(y, 1)
+    ## END
 end
 
 ## TODO: implement ==(x::Integer, y::Rat)
+## SOLUTION
+function ==(x::Integer, y::Rat)
+    ## TODO: implement
+    ## SOLUTION
+    Rat(x,1) == y
+    ## END
+end
 
-@test_broken Rat(1, 2) == Rat(2, 4)
-@test_broken Rat(1, 2) ≠ Rat(1, 3)
-@test_broken Rat(2,2) == 1
-@test_broken 1 == Rat(2,2)
+## END
+
+@test Rat(1, 2) == Rat(2, 4)
+@test Rat(1, 2) ≠ Rat(1, 3)
+@test Rat(2,2) == 1
+@test 1 == Rat(2,2)
 
 ## TODO: implement +, -, *, and /, 
+## SOLUTION
 
-@test_broken Rat(1, 2) + Rat(1, 3) == Rat(5, 6)
-@test_broken Rat(1, 3) - Rat(1, 2) == Rat(-1, 6)
-@test_broken Rat(2, 3) * Rat(3, 4) == Rat(1, 2)
-@test_broken Rat(2, 3) / Rat(3, 4) == Rat(8, 9)
++(x::Rat, y::Rat) = Rat(x.p * y.q + y.p * x.q, x.q * y.q)
+-(x::Rat, y::Rat) = Rat(x.p * y.q - y.p * x.q, x.q * y.q)
+*(x::Rat, y::Rat) = Rat(x.p * y.p, x.q * y.q)
+/(x::Rat, y::Rat) = x * Rat(y.q, y.p)
+
+## END
+
+@test Rat(1, 2) + Rat(1, 3) == Rat(5, 6)
+@test Rat(1, 3) - Rat(1, 2) == Rat(-1, 6)
+@test Rat(2, 3) * Rat(3, 4) == Rat(1, 2)
+@test Rat(2, 3) / Rat(3, 4) == Rat(8, 9)
 
 # ---------
 
@@ -285,4 +420,29 @@ Foo("hi") # isa Foo{String}
 # **Problem 4.2** Modify the above code so that `p` and `q` can be other types but both the same type,
 # for example, `Int16` or `BigInt`.
 
-##
+## SOLUTION
+## Unfortunately we can't name our new type Rat again so I'll call it RatTemplated.
+## The rest of the cidode is the same.
+struct RatTemplated{T}
+    p::T
+    q::T
+end
+
+function ==(x::RatTemplated, y::RatTemplated)
+    xg = gcd(x.p, x.q)
+    yg = gcd(y.p, y.q)
+    div(x.p, xg) == div(y.p, yg) && div(x.q, xg) == div(y.q, yg)
+end
+
+==(x::RatTemplated, y::Integer) = x == RatTemplated(y, 1)
+==(x::Integer, y::RatTemplated) = RatTemplated(x,1) == y
+
++(x::RatTemplated, y::RatTemplated) = RatTemplated(x.p * y.q + y.p * x.q, x.q * y.q)
+-(x::RatTemplated, y::RatTemplated) = RatTemplated(x.p * y.q - y.p * x.q, x.q * y.q)
+*(x::RatTemplated, y::RatTemplated) = RatTemplated(x.p * y.p, x.q * y.q)
+/(x::RatTemplated, y::RatTemplated) = x * RatTemplated(y.q, y.p)
+
+
+## END
+
+@test RatTemplated(big(2)^64, big(2)^65) == RatTemplated(1, 2)
