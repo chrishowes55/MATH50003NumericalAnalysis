@@ -21,6 +21,9 @@ notebook("src/notes/I.2.Reals.jmd"; nkwds...)
 notebook("src/notes/I.3.DividedDifferences.jmd"; nkwds...)
 notebook("src/notes/I.4.DualNumbers.jmd"; nkwds...)
 
+# Part II
+notebook("src/notes/II.1.StructuredMatrices.jmd"; nkwds...)
+
 
 #####
 # sheets
@@ -31,6 +34,9 @@ notebook("src/sheets/sheet1s.jmd"; pkwds...)
 write("src/sheets/sheet2.jmd", replace(read("src/sheets/sheet2s.jmd", String), r"\*\*SOLUTION\*\*(.*?)\*\*END\*\*"s => ""))
 notebook("src/sheets/sheet2.jmd"; pkwds...)
 notebook("src/sheets/sheet2s.jmd"; pkwds...)
+write("src/sheets/sheet3.jmd", replace(read("src/sheets/sheet3s.jmd", String), r"\*\*SOLUTION\*\*(.*?)\*\*END\*\*"s => ""))
+notebook("src/sheets/sheet3.jmd"; pkwds...)
+notebook("src/sheets/sheet3s.jmd"; pkwds...)
 
 #####
 # labs
@@ -57,7 +63,7 @@ Literate.notebook("src/labs/lab3.jl", "labs/")
 notebook("src/SpectralTheorem.jmd"; nkwds...)
 
 
-notebook("src/StructuredMatrices.jmd"; nkwds...)
+
 notebook("src/Decompositions.jmd"; nkwds...)
 notebook("src/SingularValues.jmd"; nkwds...)
 notebook("src/DifferentialEquations.jmd"; nkwds...)
