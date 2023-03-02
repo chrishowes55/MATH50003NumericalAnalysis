@@ -1,0 +1,278 @@
+# MATH50003 Numerical Analysis (2022–23)
+# Problem Sheet 7
+
+This problem sheet concerns singular value decompositions, pseudo-inverses,
+and condition numbers.
+
+-----
+
+For the SVD $A = U Σ V^⊤ ∈ ℝ^{m × n}$, where $U ∈ ℝ^{m × r}$ and $V ∈ ℝ^{n × r}$ have orthonormal columns
+and $Σ$ is a diagonal matrix with non-increasing positive entries, define the _pseudo-inverse_:
+$$
+A^+ := V Σ^{-1} U^⊤.
+$$
+
+**Problem 1.1**  Show that $A^+$ satisfies the _Moore-Penrose conditions_:
+1. $A A^+ A = A$
+2. $A^+ A A^+ = A^+$
+3. $(A A^+)^⊤  = A A^+$ and $(A^+ A)^⊤ = A^+ A$
+
+**SOLUTION**
+
+Let $A=UΣ V^⊤$ and $A^+ := V Σ^{-1} U^⊤$, where $U ∈ ℝ^{m × r}$ and $V ∈ ℝ^{n × r}$. Note that $U^⊤U = I_m$ and $V^⊤V = I_r$. 
+
+1. We have
+$$
+A A^+ A = U Σ V^⊤ V Σ^{-1} U^⊤ U Σ V^⊤ = U Σ Σ^{-1} Σ V^⊤ = UΣ V^⊤ = A
+$$
+2. Moreover,
+$$
+A^+ A A^+ = V Σ^{-1}U^⊤ U Σ V^⊤ V Σ^{-1} U^⊤ = V Σ^{-1}Σ Σ^{-1} U^⊤ = V Σ^{-1} U^⊤ = A^+
+$$
+3. 
+$$
+\begin{align*}
+(A A^+)^⊤ = (A^+)^⊤ A^⊤ = U Σ^{-1} V^⊤ V Σ U^⊤ = U U^⊤ = U Σ V^⊤ V Σ^{-1} U^⊤ = A A^+ \\
+(A^+ A)^⊤ = A^⊤ (A^+)^⊤ =  V Σ U^⊤ U Σ^{-1} V^⊤ = V V^⊤ = V Σ^{-1} U^⊤ U Σ V^⊤  = A^+ A
+\end{align*}
+$$
+
+
+**END**
+
+**Problem 1.2** Show for $A ∈ ℝ^{m × n}$ with $m ≥ n$ and full rank
+that $𝐱 =  A^+ 𝐛$ is the least squares solution, i.e., minimises $\| A 𝐱 - 𝐛 \|_2$.
+Hint: extend $U$ in the SVD to be a square orthogonal matrix.
+
+**SOLUTION**
+
+The proof mimics that of the QR factorisation. Write $A =  U Σ V^⊤$ and let
+$$
+Ũ = \begin{bmatrix}U & K \end{bmatrix}
+$$
+so that $Ũ$ is orthogonal. We use the fact orthogonal matrices do not change norms:
+$$
+\begin{align*}
+\|A 𝐱 - 𝐛 \|_2^2 &= \|U Σ V^⊤ 𝐱 - 𝐛 \|_2^2 = \|Ũ^⊤ U Σ V^⊤ 𝐱 - Ũ^⊤ 𝐛 \|_2^2 = 
+\|\underbrace{\begin{bmatrix}I_m \\ O \end{bmatrix}}_{∈ ℝ^{m × n}} Σ V^⊤ 𝐱 - \begin{bmatrix} U^⊤ \\ K^⊤ \end{bmatrix} 𝐛 \|_2^2 \\
+&= \|Σ V^⊤ 𝐱 - U^⊤ 𝐛 \|_2^2 + \|K^⊤ 𝐛\|^2
+\end{align*}
+$$
+The second term is independent of $𝐱$. The first term is minimised when zero:
+$$
+ \|Σ V^⊤ 𝐱 - U^⊤ 𝐛 \|_2 =\|Σ V^⊤ V Σ^{-1} U^⊤ 𝐛  - U^⊤ 𝐛 \|_2 = 0
+$$
+
+**END**
+
+**Problem 1.3**
+If $A ∈ ℝ^{m × n}$ has a non-empty kernel there are multiple solutions to the least
+squares problem as 
+we can add any element of the kernel. Show that $𝐱 = A^+ 𝐛$ gives the least squares solution
+such that $\| 𝐱 \|_2$ is minimised.
+
+**SOLUTION**
+
+Let $𝐱     =A^+b$ and let $𝐱 + 𝐤$ to be another solution i.e.
+$$
+\|A𝐱 - b \| = \|A (𝐱 +𝐤) - b \|
+$$
+Following the previous part we deduce:
+$$
+Σ V^⊤ (𝐱 +𝐤) = U^⊤ 𝐛 ⇒ V^⊤ 𝐤 = 0
+$$
+As $𝐱 = V 𝐜$ lies in the span of the columns of $V$ we have
+$𝐱^⊤ 𝐤 = 0$. Thus
+$$
+\| 𝐱 + 𝐤 \|^2 = \| 𝐱 \|^2 + \| 𝐤 \|^2
+$$
+which is minimised when $𝐤 = 0$.
+
+**END**
+
+
+------
+
+
+
+**Problem 2** Compute the 1-norm, 2-norm, and ∞-norm condition numbers for the following matrices:
+$$
+\begin{bmatrix}
+1 & 2 \\ 3 & 4
+\end{bmatrix}, \begin{bmatrix}
+1/3 & 1/5 \\ 0 & 1/7
+\end{bmatrix}, \begin{bmatrix} 1 \\ & 1/2 \\ && ⋱ \\ &&& 1/2^n \end{bmatrix}
+$$
+Hint: recall that the singular values of a matrix $A$ are the square roots of the eigenvalues of the Gram matrix
+$A^⊤A$.
+
+**SOLUTION**
+
+$$
+A=\begin{bmatrix}
+1 & 2 \\ 3 & 4
+\end{bmatrix},\qquad
+A^{-1}=-\frac{1}{2}\begin{bmatrix}
+4 & -2 \\ -3 & 1
+\end{bmatrix}
+$$
+
+$$
+B=\begin{bmatrix}
+1/3 & 1/5 \\ 0 & 1/7
+\end{bmatrix},\qquad
+B^{-1}=21\begin{bmatrix}
+1/7 & -1/5 \\ 0 & 1/3
+\end{bmatrix}
+$$
+
+$\|A\|_1=6$, $\|A^{-1}\|_1=7/2$, so $κ_1(A)=21$.
+
+$\|A\|_∞=7$, $\|A^{-1}\|_∞=3$, so $κ_∞(A)=21$.
+
+$\|B\|_1=12/35$, $\|B^{-1}\|_1=21\times 8/15=56/5$, so $κ_1(B)=96/25$.
+
+$\|B\|_∞=8/15$, $\|B^{-1}\|_∞=21\times 12/35$, so $κ_∞(B)=96/25$
+
+Finally, for the $2$-norms: $κ_2(A)$:
+For $A =  \begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix}$, we have that the singular values are the $σ_1 = \sqrt{λ_1}, σ_2 = \sqrt{λ_2}$, where $λ_1$ and $λ_2$ are the eigenvalues of $A^⊤A$.
+$$
+A^⊤A =   \begin{bmatrix}
+10 & 14 \\
+14 & 20
+\end{bmatrix},
+$$
+so an eigenvalue $λ$ of $A^⊤ A$ must satisfy,
+$$
+\begin{align*}
+(10 - λ)(20-λ) - 196 = 0 \\
+⇔ λ = 15 \pm\sqrt{221}.
+\end{align*}
+$$
+The larger eigenvalue corresponds to $σ_1$, so $σ_1 = \sqrt{15  + \sqrt{221}}$, and the smaller corresponds to $σ_2$, so $σ_2 = \sqrt{15  - \sqrt{221}}$. Finally, we have $\|A\|_2 = σ_1, \|A^{-1}\|_2 = 1/σ_2$, and so $κ_2(A) = \sqrt{\frac{15  + \sqrt{221}}{15  - \sqrt{221}}}$.
+
+ $κ_2(B)$:
+For 
+$$
+B =   \begin{bmatrix}
+1/3 & 1/5 \\
+0 & 1/7
+\end{bmatrix},
+$$
+we have that the singular values are the $σ_1 = \sqrt{λ_1}, σ_2 = \sqrt{λ_2}$, where $λ_1$ and $λ_2$ are the eigenvalues of $A^⊤A$.
+$$
+A^⊤A =   \begin{bmatrix}
+1/9 & 1/15 \\
+1/15 & \frac{74}{5^27^2}
+\end{bmatrix}.
+$$
+An eigenvalue $λ$ must satisfy:
+\begin{align*}
+(1/9 - λ) ≤ \left(\frac{74}{5^27^2}-λ\right) - \frac{1}{225} = 0 \\
+⇔ λ = \frac{1891 \pm29\sqrt{2941}}{22050}.
+\end{align*}
+With the same logic as above, we can then deduce that
+$$
+\|B\|_2 = \sqrt{\frac{1891 +29\sqrt{2941}}{22050}}
+$$
+and
+$$
+\|B^{-1}\|_2 \sqrt{\frac{22050}{1891 -29\sqrt{2941}}}
+$$
+so that,
+$$
+κ_2(B) = \sqrt{\frac{1891 +29\sqrt{2941}}{1891 -29\sqrt{2941}}}
+$$
+
+For,
+$$
+A_n =   \begin{bmatrix}1 \\ &1/2 \\&&⋱ \\&&&1/2^n \end{bmatrix},\hspace{5mm}
+A_n^{-1} =   \begin{bmatrix}1 \\ &2 \\&&⋱ \\&&&2^n \end{bmatrix}
+$$ 
+It is clear that $$\|A_n\|_1 = \|A_n\|_∞ = 1,$$ and
+$$
+\|A_n^{-1}\|_1 = \|A_n^{-1}\|_∞ = 2^n,
+$$
+so $κ_1(A_n) = κ_∞(A) = 2^n$.
+Morover, we can clearly see the singular values $σ_1 = 1, σ_2 = 1/2, …, σ_{n+1} = 1/2^n$. So $\|A_n\|_2 = 1, \|A_n^{-1}\|_2 = 2^n$, $κ_2(A_n) = 2^n$
+
+**END**
+
+
+
+
+
+--------
+
+**Problem 3.1**
+For $U ∈ ℝ^{n × n}$, an upper triangular matrix such that the diagonal are all 1 ($u_{kk} = 1$)
+and all entries are floats, 
+show that backsubstitution implemented with floating point has a backward error formula:
+$$
+{\tt backsubstitution}(U, 𝐛) = (U+δU)^{-1} (𝐛 + δ𝐛).
+$$
+Assuming $n ϵ_{\rm m} < 2$ and all operations are in the
+normalised range, show that
+$$
+\begin{align*}
+|δb_k| &≤ {ϵ_{\rm m} \over 2} |b_k| \\
+|δu_{k,j}| &≤ E_{n-k+1,ϵ_{\rm m}/2} |u_{k,j}|\qquad\hbox{for $j > k$} \\
+|δu_{k,j}| &= 0 \qquad \hbox{for $j ≤ k$}
+\end{align*}
+$$
+Hint: Note that if we write $𝐱̃ = {\tt backsubstitution}(U, 𝐛)$ then we have
+$$
+x̃_k = b_k ⊖ {\tt dot}(U[k,k+1:n], 𝐱̃[k+1:n]).
+$$
+You may then use II.7 Lemma 1.
+
+
+**SOLUTION**
+
+For $𝐱 = U^{-1} 𝐛$ and $𝐱̃ = {\tt backsubstitution}(U, 𝐛)$, note $x_n = x̃_n = b_n$. we have:
+$$
+x̃_{n-1} = b_{n-1} ⊖ (u_{n-1,n} ⊗ x̃_n) = (b_{n-1} - (u_{n-1,n}  x̃_n) (1+δ_1))(1 + δ_2)
+=b_{n-1} (1+δ_2) - u_{n-1,n} (1+δ_1) (1+δ_2)  x̃_n
+$$
+Hence $δb = b_{n-1}δ_2$ and $δU[n-1,n] = u_{n-1,n} θ_2$.
+
+Write $𝐮_k := U[k,k+1:n]$ and $𝐛_k = 𝐛[k+1:n]$. Note from Lemma 1 in lectures we have 
+$$
+{\tt dot}(𝐮_k, 𝐛_k) = (𝐮_k + δ𝐮_k)^⊤𝐛_k
+$$
+where $|δ𝐮_k| ≤ E_{n-k,ϵ_{\rm m}/2} |𝐮_k|$.
+Thus we find
+$$
+x̃_k = b_k ⊖ {\tt dot}(𝐮_k, 𝐛_k) = (b_k - ((𝐮_k + δ𝐮_k)^⊤ 𝐱̃[k+1:n]))(1+δ_k) 
+= b_k + δ_k b_k  - (𝐮_k + δ𝐮_k (1+δ_k))^⊤ 𝐱̃[k+1:n]).
+$$
+In other words, we have:
+$$
+𝐱̃ = (U+δU)^{-1} (𝐛 + δ𝐛)
+$$
+where for $j > k$,
+$$
+|δu_{k,j}| = |δ𝐮_k (1+δ_k)| ≤ E_{n-k+1,ϵ_{\rm m}/2}
+$$
+**END**
+
+**Problem 3.2** Show that 
+$$
+\begin{align*}
+\|δU\|_1 &≤  E_{n,ϵ_{\rm m}/2} \|U \|_1 \\
+\|δU\|_2 &≤  \sqrt{n} E_{n,ϵ_{\rm m}/2} \|U \|_2 \\
+\|δU\|_∞ &≤  E_{n,ϵ_{\rm m}/2} \|U \|_∞
+\end{align*}
+$$
+
+**SOLUTION**
+
+This is identical to the proof of II.7 Corollary 1 after observing that
+$$
+|δu_{k,j}| ≤ E_{n,ϵ_{\rm m}/2} |u_{k,j}|.
+$$
+
+**END**

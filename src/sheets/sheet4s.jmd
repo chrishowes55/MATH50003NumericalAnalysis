@@ -1,1 +1,218 @@
-**Problem** True or false: `mul_rows(A, x)` and `mul_cols(A, x)` will always return the same result if the input is floating point?
+# MATH50003 Numerical Analysis (2022–23)
+# Problem Sheet 4
+
+This problem sheet concerns matrix multiplication, permutation matrices, and properties of orthogonal/unitary matrices.
+
+
+
+**Problem 1.1** True or false: `mul_rows(A, x)` and `mul_cols(A, x)` from the lectures/notes 
+will always return the exact same result if the input are floating point? Explain your answer.
+
+**SOLUTION**
+
+True. Even though the implementations are different the mathematical operations are still performed
+for each entry in the same way. On the other hand, if we had an implementation that reversed the
+order the columns/rows are traversed this would change the answer.
+
+**END**
+
+**Problem 1.2** Express the vector that `mul_rows(A, x)` returns in terms of $⨁_{j=1}^n$ and $⊗$,
+using the notation $A_{k,j}$ for the $k,j$ entry of $A$ and $x_j$ for the $j$-th entry of $𝐱$,
+where   $A ∈ F_{σ,Q,S}^{m × n}$ and $𝐱 ∈ F_{σ,Q,S}^n$.
+
+**SOLUTION**
+
+$$
+\begin{pmatrix}
+⨁_{j=1}^n A_{1,j} ⊗ x_j\\
+⋮ \\
+⨁_{j=1}^n A_{1,j} ⊗ x_j
+\end{pmatrix}
+$$
+
+**END**
+
+**Problem 1.3** Show when implemented in floating point arithmetic for $A ∈ F_{σ,Q,S}^{m × n}$ and $𝐱 ∈ F_{σ,Q,S}^n$ that
+$$
+\hbox{mul$\_$rows}(A, 𝐱) = A 𝐱 + \mathbf{δ} 
+$$
+where
+$$
+\| δ \|_∞ ≤ 2 \|A\|_∞ \| 𝐱 \|_∞ E_{n,ϵ_{\rm m}/2}
+$$
+and
+$$
+E_{n,ε} := {n ε\over 1-nε},
+$$
+assuming that $n ϵ_{\rm m} < 2$. 
+We use the notation (to be discussed in detail later):
+$$
+\|A \|_∞ := \max_k ∑_{j=1}^n |a_{kj}|, \|𝐱\|_∞ := \max_k |x_k|. 
+$$
+You may assume all operations are in the normalised range and
+use Problem 2.3 from PS2.
+
+**SOLUTION**
+We have for the $k$=th row
+$$
+⨁_{j=1}^n A_{k,j} ⊗ x_j =  ⨁_{j=1}^n A_{k,j} x_j (1+δ_j) = 
+∑_{j=1}^n A_{k,j} x_k (1+δ_j) + σ_{k,n}
+$$
+where from PS2.2.3 we know $|σ_n| ≤ M_k E_{n-1,ϵ_{\rm m}/2}$, where
+$$
+M_k ≤ Σ_{j=1}^n |A_{k,j}| |x_k| (1+|δ_j|)  ≤ 2 \max |x_k| Σ_{j=1}^n |A_{k,j}|
+≤ 2 \|𝐱\|_∞ \|A \|_∞
+$$
+Similarly, we also have 
+$$
+|∑_{j=1}^n A_{k,j} x_k δ_j| ≤ \|𝐱\|_∞ \|A \|_∞ ϵ_{\rm m}/2
+$$
+and so the result follows from
+$$
+ϵ_{\rm m}/2 + 2E_{n-1,ϵ_{\rm m}/2} ≤ {ϵ_{\rm m}/2 + ϵ_{\rm m} (n-1) \over 1-(n-1)ϵ_{\rm m}/2} ≤ {ϵ_{\rm m} n \over 1-nϵ_{\rm m}/2} = 2E_{n,ϵ_{\rm m}/2}.
+$$
+**END**
+
+
+
+------
+
+**Problem 2** What are the permutation matrices corresponding to the following permutations?
+$$
+\begin{pmatrix}
+1 & 2 & 3 \\
+3 & 2 & 1
+\end{pmatrix}, \begin{pmatrix}
+1 & 2 & 3 & 4 & 5 & 6\\
+2 & 1 & 4 & 3 & 6 & 5
+\end{pmatrix}.
+$$
+
+**SOLUTION**
+
+Let
+$$
+σ=\begin{pmatrix}1 & 2 & 3 \\ 3 & 2 & 1\end{pmatrix}, τ=\begin{pmatrix}1 & 2 & 3 & 4 & 5 & 6\\ 2 & 1 & 4 & 3 & 6 & 5\end{pmatrix}.
+$$
+There are two ways to construct $P_σ$ and $P_τ$.
+
+- Column by column:
+  $$P_σ=
+  \left(𝐞_{σ_1^{-1}}\middle|𝐞_{σ_2^{-1}}\middle|𝐞_{σ_3^{-1}}\right)=
+  \left(𝐞_3\middle|𝐞_2\middle|𝐞_1\right)$$
+  $$P_τ=
+  \left(𝐞_{τ_1^{-1}}\middle|𝐞_{τ_2^{-1}}\middle|𝐞_{τ_3^{-1}}\middle|𝐞_{τ_4^{-1}}\middle|𝐞_{τ_5^{-1}}\middle|𝐞_{τ_6^{-1}}\right)=
+  \left(𝐞_2\middle|𝐞_1\middle|𝐞_4\middle|𝐞_3\middle|𝐞_6\middle|𝐞_5\right)$$
+- Row by row:
+  $$P_σ=I[\mathbf{σ},:]=
+  \begin{pmatrix}
+  I[σ_1,:]\\
+  I[σ_2,:]\\
+  I[σ_3,:]
+  \end{pmatrix}=
+  \begin{pmatrix}
+  I[3,:]\\
+  I[2,:]\\
+  I[1,:]
+  \end{pmatrix}$$
+  $$P_τ=I[\mathbf{τ},:]=
+  \begin{pmatrix}
+  I[τ_1,:]\\
+  I[τ_2,:]\\
+  I[τ_3,:]\\
+  I[τ_4,:]\\
+  I[τ_5,:]\\
+  I[τ_6,:]\\
+  \end{pmatrix}=
+  \begin{pmatrix}
+  I[2,:]\\
+  I[1,:]\\
+  I[4,:]\\
+  I[3,:]\\
+  I[6,:]\\
+  I[5,:]\\
+  \end{pmatrix}$$
+
+Either way, we have
+$$P_σ=
+\begin{pmatrix}
+0 & 0 & 1\\ 
+0 & 1 & 0\\ 
+1 & 0 & 0
+\end{pmatrix}
+\qquad\text{and}\qquad
+P_τ=
+\begin{pmatrix}
+0 & 1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 1 & 0
+\end{pmatrix}
+$$
+**END**
+
+-------
+
+**Problem 3.1** Show for a unitary matrix $Q ∈ U(n)$ and a vector $𝐱 ∈ ℂ^n$ that multiplication by $Q$ preserve the 2-norm:
+$$
+\|Q 𝐱\| = \|𝐱\|.
+$$
+
+**SOLUTION**
+$$
+\|Q 𝐱\|^2 = (Q 𝐱)^⋆ Q 𝐱 = 𝐱^⋆ Q^⋆ Q 𝐱 = 𝐱^⋆  𝐱 = \|𝐱\|^2
+$$
+**END**
+
+**Problem 3.2** Show that the eigenvalues $λ$ of a unitary matrix $Q$ are
+on the unit circle: $|λ| = 1$. Hint: recall for any eigenvalue $λ$ that there exists a unit vector
+$𝐯 ∈ ℂ^n$ (satisfying $\| 𝐯 \| = 1$). Combine this with Problem 3.1.
+
+**SOLUTION**
+Let $𝐯$ be a unit eigenvector corresponding to $λ$: $Q 𝐯 = λ 𝐯$ with $\|𝐯\| = 1$. Then
+$$
+1 = \| 𝐯 \| = \|Q 𝐯 \| =  \| λ 𝐯 \| = |λ|.
+$$
+
+**END**
+
+**Problem 3.3** Show for an orthogonal matrix $Q ∈ O(n)$ that $\det Q = ±1$.
+Give an example of $Q ∈ U(n)$ such that $\det Q ≠ ±1$.
+Hint: recall for any real matrices $A$ and $B$ that $\det A = \det A^⊤$ and
+$\det(AB) = \det A \det B$.
+
+**SOLUTION**
+
+$$
+(\det Q)^2 = (\det Q^⊤)(\det Q) = \det Q^⊤Q = \det I = 1.
+$$
+An example would be a 1 × 1 complex-valued matrix $\exp({\rm i})$.
+
+**END**
+
+
+**Problem 3.4** Show that $Q ∈ U(n)$ is a normal matrix (that it commutes with its adjoint).
+
+**SOLUTION**
+$$
+ QQ^⋆ = I = Q^⋆Q
+$$
+**END**
+
+**Problem 3.5** 
+Explain why  $Q ∈ U(n)$ must be equal to $I$ if all its eigenvalues are 1.
+Hint: use the spectral theorem, which says that any normal matrix is diagonalisable
+with unitary eigenvectors (see notes on C. Adjoints and Normal Matrices).
+
+**SOLUTION**
+
+Note that $Q$ is normal and therefore by the spectral theorem for 
+normal matrices we have
+$$
+Q = Q̃ Λ Q̃^⋆ = Q̃ Q̃^⋆ = I
+$$
+since $Q̃$ is unitary. 
+
+**END**
