@@ -48,7 +48,9 @@ Indeed:
 printbits(Float16(π))
 ```
 Instead of simply guessing the above representation we can instead continuously subtract the largest powers 2 which do not result in a negative number. For $\pi$ the procedure then finds that we can write
-$$ \pi - 1*2^1 - 1*2^0 - 1*2^{-3} - 1*2^{-6} ...$$
+$$
+\pi - 1*2^1 - 1*2^0 - 1*2^{-3} - 1*2^{-6} ...
+$$
 **END**
 
 **Problem 3** What are the single precision $F_{32}$ (`Float32`) floating point representations for the following: 
@@ -203,7 +205,7 @@ shifting the significand.
 If $j ≥ S+2$ then 
 $$
 x + 2 = 2^j (1.b_1…b_S\underbrace{0…0}_{j-S-2\hbox{ times}} 10)_2
-$$ 
+$$
 and when rounded the trailing $10$ will be removed.
 (Of course `Inf + 2 == Inf` and `NaN + 2 == NaN` as well.)
 
@@ -375,7 +377,7 @@ $$
 $$
 where
 $$
-|δ_8| ≤ 10 ϵ_{\rm m}
+|δ_8| ≤ 11 ϵ_{\rm m}
 $$
 
 
@@ -386,13 +388,13 @@ $$
 $$
 Write
 $$
-{1 \over 1 + δ_3} = 1 + \delta_5
+{1 \over 1 + δ_3} = 1 + δ_5
 $$
 where
 $$
-|δ_5| \leq \left| {\delta_3 \over 1 + \delta_3} \right| \leq  {ϵ_{\rm m} \over 2} {1 \over 1 - 1/2} \leq ϵ_{\rm m}
+|δ_5| \leq \left| {δ_3 \over 1 + δ_3} \right| \leq  {ϵ_{\rm m} \over 2} {1 \over 1 - 1/2} \leq ϵ_{\rm m}
 $$
-using the fact that $|\delta_3| < 1/2$.
+using the fact that $|δ_3| < 1/2$.
 Further write
 $$
 (1 + δ_5)(1 + δ_4) = 1 + δ_6
